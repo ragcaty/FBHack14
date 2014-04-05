@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html ng-app="Anim">
+<head>
+	<title>Our first App</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular-animate.min.js"></script>
+	<script src="js/functions.js"></script>
+	<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+<div id="fb-root"></div>
+<div ng-app>
+  	<div class="status" ng-class="{red: hover}" ng-mouseenter="hover=true" ng-mouseleave="hover=false"></div>
+  	<div class="events" ng-mouseenter="disappear()"> 
+  		<ol>
+		</ol>
+	</div>
+</div>
+<div class="fb-login-button" data-max-rows="1" data-size="large" data-show-faces="true" scope="basic_info, publish_actions, user_about_me, user_checkins, user_activities, user_friends, user_birthday, user_events, user_photos, friends_photos, user_status" data-auto-logout-link="true"></div>
+
+</body>
+</html>

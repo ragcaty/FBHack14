@@ -1,3 +1,10 @@
+var Anim = angular.module("Anim", ['ngAnimate']);
+
+function disappear() {
+	var d = document.getElementsByClassName("events");
+	d.setAttribute('display', 'none');
+}
+
 window.fbAsyncInit = function() {
   FB.init({
     appId      : 847757078573654,
@@ -8,7 +15,6 @@ window.fbAsyncInit = function() {
 
   FB.Event.subscribe('auth.authResponseChange', function(response) {
     if (response.status === 'connected') {
-		
 		getStatus('/me', doneStatus);
     } else if (response.status === 'not_authorized') {
     } else {
@@ -39,7 +45,8 @@ window.fbAsyncInit = function() {
 				query:q },
 			function(data) {
 				if(data.length !=0) {
-					callback(data, 's');
+					var d = data[0];
+					callback(d, 's');
 				} else {
 					callback(null);
 				}
@@ -61,59 +68,23 @@ window.fbAsyncInit = function() {
 
   function doneStatus(data, identifier) {
   	if(data !== null) {
-		var sec = document.getElementById("first");
-		var newSec = document.createElement("article");
-		sec.parentNode.insertBefore(newSec, sec);
-		sec.id = "";
-		newSec.id= "first";
-		if(sec.className == "container box style1 right") {
-			newSec.className="container box style1 left";
-		} else {
-			newSec.className = "container box style1 right";
-		}
-
 		switch(identifier) {
 			case 's':
-				var head = "Your most liked status: \"" + data[0].message + "\"";
-				var para = "By the way, you made " + data.length + " status updates in the past year!";
-			    fillSection(newSec, "http://www.google.com", "images/pic01.jpg", head, para);
+	  			var div = document.getElementsByClassName('status');
+	  			div[0].innerHTML = data.message;
 				break;
 			case 'e':
-				var head = "You were invited to " + data.length + " events this past year!";
-				var para = "Do you remember going to: ";
-				if(data.length < 3) {
-					for(var i=0; i<data.length; i++) {
-						if(i == data.length-1) {
-							para += data[i].name;
-						}else {
-							para += data[i].name + ", ";
-						}
-					}
-				} else {
-					var count = 0;
-					var i = 0;
-					while(count != 3 || i != data.length) {
-					
-				fillSection(newSec, "http://www.google.com", "images/pic04.jpg", head, para);
+				var parent = document.getElementsByClassName('events');
+				parent[0].innerHTML = "You were invited to " + data.length + " events this past year!" + parent[0].innerHTML;
+				var list = document.getElementsByTagName("ol");
+				for(var i=0; i<data.length; i++) {
+					var d = document.createElement("li");
+					d.className = 'event-details';
+					d.appendChild(document.createTextNode(data[i].name));
+					list[0].appendChild(d);
+				}
 				break;
 		}
 	}
   }
-  function fillSection(newSec, link, imgsrc, heading, para) {
-  	var a = document.createElement("a");
-	a.setAttribute("href", link);
-	a.className = "image full";
-	var im = document.createElement("img");
-	im.setAttribute("src", imgsrc);
-	a.appendChild(im);
-	newSec.appendChild(a);
-	var div = document.createElement("div");
-	div.className = "inner";
-	newSec.appendChild(div);
-	var h = document.createElement("h2");
-	h.innerHTML = heading;
-	var p = document.createElement("p");
-	p.innerHTML = para; 
-	div.appendChild(h);
-	div.appendChild(p);
-  }
+
