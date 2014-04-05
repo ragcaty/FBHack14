@@ -42,6 +42,8 @@ window.fbAsyncInit = function() {
 					callback(null);
 				}
 			});
+
+			var ids = [];
 			FB.api('/me/checkins?fields=place,tags.fields(name),created_time,from,message&limit=200&since=2013-03-23', function(response) {
 				var locations = [];
 				var friends =  [];
@@ -54,6 +56,8 @@ window.fbAsyncInit = function() {
 				{
 				  response.data[j].tags.data[k].name.toUpperCase();
 				  friends.push(response.data[j].tags.data[k].name);
+				  ids.push(response.data[j].tags.data[k].id);
+				  console.log(ids[k]);
 				}
 			  }
 			  var uniqueloc= [];
@@ -70,7 +74,7 @@ window.fbAsyncInit = function() {
 					callback(null);
 				}
 				if(uniquefriends.length != 0) {
-					callback(uniquefriends, 'f');
+					callback(uniquefriends, 'f', ids);
 				} else {
 					callback(null);
 				}
@@ -100,7 +104,7 @@ window.fbAsyncInit = function() {
     });
   }
 
-  function doneStatus(data, identifier) {
+  function doneStatus(data, identifier, friend_list) {
   	if(data !== null) {
 		var sec = document.getElementById("first");
 		var newSec = document.createElement("article");
@@ -144,6 +148,15 @@ window.fbAsyncInit = function() {
 				fillSection(newSec, link, src, head, para);
 				break;
 			case 'l':
+			case 'f':
+				for(var i = 0; i < friend_list.length; i++)
+				{
+					var qry = 'SELECT url FROM profile_pic WHERE id = '+friend_list[i];
+					FB.api('/fql',{q:fqlRequest}, function(response){
+						var friend_url = response.data.url;
+					});
+					fillSection(newSec, 'https://graph.facebook.com/'+friend_list[i], friend_url , "Friends", "Friends");
+				}
 				
 		}
 	}
