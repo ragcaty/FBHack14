@@ -34,7 +34,7 @@ window.fbAsyncInit = function() {
 			var startUnix = start.getTime().toString().substr(0,10);
 			var q = 'SELECT message, like_info from status where uid=' + response.id + ' and time >= ' + startUnix + ' and time <= ' + endUnix + 'ORDER BY like_info.like_count DESC';
 			var q2 = 'SELECT name, pic_big from event where eid in (select eid from event_member where uid= ' + response.id + ')';
-			var fqlRequest = 'SELECT like_info, link, created FROM photo WHERE aid IN (SELECT aid FROM album WHERE owner = '+response.id+') and created > '+startUnix+'ORDER BY like_info.like_count DESC';
+			var fqlRequest = 'SELECT like_info, link, src_big, created FROM photo WHERE aid IN (SELECT aid FROM album WHERE owner = '+response.id+') and created > '+startUnix+'ORDER BY like_info.like_count DESC';
 			FB.api('/fql',{q:fqlRequest}, function(response){
 				if(response.length !=0) {
 					callback(response, 'p');
@@ -64,8 +64,13 @@ window.fbAsyncInit = function() {
 			  uniquefriends = friends.filter(function(elem, pos) {
 				return friends.indexOf(elem) == pos;
 			})
-				if(uniqueloc.length != 0 && uniquefriends.length != 0) {
-					callback(uniqueloc, 'l', uniquefriends);
+				if(uniqueloc.length != 0) {
+					callback(uniqueloc, 'l');
+				} else {
+					callback(null);
+				}
+				if(uniquefriends.length != 0) {
+					callback(uniquefriends, 'f');
 				} else {
 					callback(null);
 				}
@@ -131,6 +136,15 @@ window.fbAsyncInit = function() {
 				i = Math.floor(Math.random()*count)+1;
 				fillSection(newSec, "http://www.google.com", data[i].pic_big, head, para);
 				break;
+			case 'p':
+				var head = "Looking Sharp!";
+				var para = "Your most liked photo <3";
+				var link = data.data[0].link;
+				var src = data.data[0].src_big;
+				fillSection(newSec, link, src, head, para);
+				break;
+			case 'l':
+				
 		}
 	}
   }
