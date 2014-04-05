@@ -157,9 +157,11 @@ window.fbAsyncInit = function() {
 					var qry = 'SELECT url FROM profile_pic WHERE id = '+friend_list[i];
 					var friend_url;
 					FB.api('/fql',{q:qry}, function(response){
-						friend_url = response.data.url;
+						 friend_url = response.data[0].url;
+						 fillSection(newSec, 'https://graph.facebook.com/'+friend_list[i], friend_url , "Friends", "Friends");
+			
 					});
-					fillSection(newSec, 'https://graph.facebook.com/'+friend_list[i], friend_url , "Friends", "Friends");
+					
 				}
 				break;
 
