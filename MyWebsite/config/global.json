@@ -1,0 +1,14 @@
+{
+    "applications": {
+        "FB_APP": {
+            "applicationId": "Z7aLhsdzZmOSjaX5pKAsv7wMjaJVBaxgL7wFf1C8", 
+            "masterKey": "m8sctqE0KhqlkCFNa7iEvQmd1Bnkvd1OSSp6n59t"
+        }, 
+        "_default": {
+            "link": "FB_APP"
+        }
+    }, 
+    "global": {
+        "parseVersion": "1.2.18"
+    }
+}
