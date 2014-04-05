@@ -26,6 +26,8 @@
 		"128": "photos/bomb128.png"
 	},
 
+	"content_security_policy": "script-src 'self' 'unsafe-eval' https://connect.facebook.net; object-src 'self'",
+
 	"permissions": [
 		"<all_urls>",
 		"declarativeContent"

@@ -1,4 +1,3 @@
-angular.module('animate', ['ngAnimate']);
 var rule1 = {
 	conditions: [
 		new chrome.declarativeContent.PageStateMatcher({

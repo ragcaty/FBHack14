@@ -1,0 +1,14 @@
+{
+    "applications": {
+        "FB Self Improvement": {
+            "applicationId": "IUSZfsyFYXQHjoSQvsv08Y2rQUPJZaK7MFXKQ06k", 
+            "masterKey": "hXisLpMP3YelxoP1wvAtaLNaT688ShgRhckGLnTa"
+        }, 
+        "_default": {
+            "link": "FB Self Improvement"
+        }
+    }, 
+    "global": {
+        "parseVersion": "1.2.18"
+    }
+}
