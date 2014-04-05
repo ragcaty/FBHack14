@@ -8,7 +8,6 @@ window.fbAsyncInit = function() {
 
   FB.Event.subscribe('auth.authResponseChange', function(response) {
     if (response.status === 'connected') {
-		
 		getStatus('/me', doneStatus);
     } else if (response.status === 'not_authorized') {
     } else {
@@ -43,15 +42,16 @@ window.fbAsyncInit = function() {
 				}
 			});
 
+
 			var ids = [];
 			FB.api('/me/checkins?fields=place,tags.fields(name),created_time,from,message&limit=200&since=2013-03-23', function(response) {
 				var locations = [];
 				var friends =  [];
 			  for(var j = 0; j < response.data.length; j++)
 			  {
-				console.log("Where have you been this past year? Who was with you? And what did you do?");
 				response.data[j].place.name.toUpperCase();
-				locations.push(response.data[j].place.name);
+				var loc = {name:response.data[j].place.name, lat:response.data[j].place.location.latitude, long:response.data[j].place.location.longitude};
+				locations.push(loc);
 				for(var k = 0; ('tags' in response.data[j]) && (k < response.data[j].tags.data.length); k++)
 				{
 				  response.data[j].tags.data[k].name.toUpperCase();
@@ -111,10 +111,10 @@ window.fbAsyncInit = function() {
 		sec.parentNode.insertBefore(newSec, sec);
 		sec.id = "";
 		newSec.id= "first";
-		if(sec.className == "container box style1 right") {
-			newSec.className="container box style1 left";
+		if(sec.className == "container box style1 left") {
+			newSec.className="container box style1 right";
 		} else {
-			newSec.className = "container box style1 right";
+			newSec.className = "container box style1 left";
 		}
 
 		switch(identifier) {
@@ -148,6 +148,11 @@ window.fbAsyncInit = function() {
 				fillSection(newSec, link, src, head, para);
 				break;
 			case 'l':
+				var heading="You visited a lot of places...";
+				var i = Math.floor(Math.random()*data.length);
+				var para= "...like " + data[i].name;
+				fillMap(newSec, data[i], heading, para);
+				break;
 			case 'f':
 				for(var i = 0; i < friend_list.length; i++)
 				{
@@ -157,10 +162,40 @@ window.fbAsyncInit = function() {
 					});
 					fillSection(newSec, 'https://graph.facebook.com/'+friend_list[i], friend_url , "Friends", "Friends");
 				}
-				
+				break;
+
 		}
 	}
   }
+var map;
+var marker;
+var myLatLng;
+  function fillMap(newSec, data, heading, para) {
+    var div = document.createElement("div");
+	div.id = "map-canvas";
+	div.className = "image full";
+	newSec.appendChild(div);
+	var mapOptions = {
+		center: new google.maps.LatLng(data.lat, data.long),
+		zoom: 8
+	};
+	myLatLng = new google.maps.LatLng(data.lat, data.long);
+	map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
+	var marker = new google.maps.Marker({
+		position: myLatLng,
+		map: map
+	});
+  	var div = document.createElement("div");
+	div.className = "inner";
+	newSec.appendChild(div);
+	var h = document.createElement("h2");
+	h.innerHTML = heading;
+	var p = document.createElement("p");
+	p.innerHTML = para; 
+	div.appendChild(h);
+	div.appendChild(p);
+  }
+
   function fillSection(newSec, link, imgsrc, heading, para) {
   	var a = document.createElement("a");
 	a.setAttribute("href", link);
