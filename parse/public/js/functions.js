@@ -33,7 +33,43 @@ window.fbAsyncInit = function() {
 			var endUnix= end.getTime().toString().substr(0,10);
 			var startUnix = start.getTime().toString().substr(0,10);
 			var q = 'SELECT message, like_info from status where uid=' + response.id + ' and time >= ' + startUnix + ' and time <= ' + endUnix + 'ORDER BY like_info.like_count DESC';
-			var q2 = 'SELECT name from event where eid in (select eid from event_member where uid= ' + response.id + ')';
+			var q2 = 'SELECT name, pic_big from event where eid in (select eid from event_member where uid= ' + response.id + ')';
+			var fqlRequest = 'SELECT like_info, link, created FROM photo WHERE aid IN (SELECT aid FROM album WHERE owner = '+response.id+') and created > '+startUnix+'ORDER BY like_info.like_count DESC';
+			FB.api('/fql',{q:fqlRequest}, function(response){
+				if(response.length !=0) {
+					callback(response, 'p');
+				} else {
+					callback(null);
+				}
+			});
+			FB.api('/me/checkins?fields=place,tags.fields(name),created_time,from,message&limit=200&since=2013-03-23', function(response) {
+				var locations = [];
+				var friends =  [];
+			  for(var j = 0; j < response.data.length; j++)
+			  {
+				console.log("Where have you been this past year? Who was with you? And what did you do?");
+				response.data[j].place.name.toUpperCase();
+				locations.push(response.data[j].place.name);
+				for(var k = 0; ('tags' in response.data[j]) && (k < response.data[j].tags.data.length); k++)
+				{
+				  response.data[j].tags.data[k].name.toUpperCase();
+				  friends.push(response.data[j].tags.data[k].name);
+				}
+			  }
+			  var uniqueloc= [];
+			  uniqueloc = locations.filter(function(elem, pos) {
+				return locations.indexOf(elem) == pos;
+			});
+			  var uniquefriends = [];
+			  uniquefriends = friends.filter(function(elem, pos) {
+				return friends.indexOf(elem) == pos;
+			})
+				if(uniqueloc.length != 0 && uniquefriends.length != 0) {
+					callback(uniqueloc, 'l', uniquefriends);
+				} else {
+					callback(null);
+				}
+			});
 			FB.api( {
 				method: 'fql.query',
 				query:q },
@@ -81,20 +117,19 @@ window.fbAsyncInit = function() {
 			case 'e':
 				var head = "You were invited to " + data.length + " events this past year!";
 				var para = "Do you remember going to: ";
-				if(data.length < 3) {
-					for(var i=0; i<data.length; i++) {
-						if(i == data.length-1) {
-							para += data[i].name;
-						}else {
-							para += data[i].name + ", ";
-						}
+				var count = 0;
+				for(var i=0; i<data.length; i++) {
+					if(i == 2) {
+						para += data[i].name;
+					}else {
+						para += data[i].name + ", ";		
 					}
-				} else {
-					var count = 0;
-					var i = 0;
-					while(count != 3 || i != data.length) {
-					
-				fillSection(newSec, "http://www.google.com", "images/pic04.jpg", head, para);
+					count++;
+					if(count == 3)
+						break;
+				}
+				i = Math.floor(Math.random()*count)+1;
+				fillSection(newSec, "http://www.google.com", data[i].pic_big, head, para);
 				break;
 		}
 	}
