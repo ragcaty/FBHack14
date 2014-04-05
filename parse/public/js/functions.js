@@ -106,10 +106,10 @@ window.fbAsyncInit = function() {
 		sec.parentNode.insertBefore(newSec, sec);
 		sec.id = "";
 		newSec.id= "first";
-		if(sec.className == "container box style1 right") {
-			newSec.className="container box style1 left";
+		if(sec.className == "container box style1 left") {
+			newSec.className="container box style1 right";
 		} else {
-			newSec.className = "container box style1 right";
+			newSec.className = "container box style1 left";
 		}
 
 		switch(identifier) {
